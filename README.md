@@ -1,61 +1,67 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# About Smart CMS
 
-## About Laravel
+A tutorial system for creating CRUD operations and basic administration interface and working in your own editorial
+system.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Installation
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Clone project
+2. Install Docker (optionally run in PHP ready server)
+   1. Install dependencies by docker & sail, you can use `--ignore-platform-reqs`
+       ```bash
+       docker run --rm \
+           -u "$(id -u):$(id -g)" \
+           -v "$(pwd):/var/www/html" \
+           -w /var/www/html \
+           laravelsail/php83-composer:latest \
+           composer install
+       ```
+3. Copy `.env.example > .env` file and setup environments
+    - Generate key `sail artisan key:generate` (after `sail up` - if you're using docker)
+4. Start app by `sail up` or `sail up -d` (if you're using docker)
+5. Install NPM by `sail npm install` (if you're using docker use `sail` or just `npm`)
+6. Install NPM by `sail npm run build` (if you're using docker use `sail` or just `npm`)
 
-## Learning Laravel
+## Generators
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+> **Generators** are separately libraries installed as **DEV dependencies**.
+>
+> This project not using InfyOm Generator, because not working for Laravel 11+ and also doesn't have DEV dependencies
+> only.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**Factory generator** - [laravel-factory-generator](https://github.com/TheDoctor0/laravel-factory-generator)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**CRUD generator** - [laravel-crud-generator](https://github.com/awais-vteams/laravel-crud-generator?tab=readme-ov-file)
 
-## Laravel Sponsors
+[laravel-crud-generator - Tutorial](https://medium.com/@awais.sds/generate-laravel-11-api-crud-in-2-min-2124540990f9)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Steps to generate
 
-### Premium Partners
+**Create CRUD**
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+1. Run command `sail artisan make:crud {table_name}` and select Tailwind CSS or run
+   command `sail artisan make:crud {table_name} tailwind`
+2. Add route `Route::resource('users', UserController::class);` to [web.php](routes/web.php)
+3. Add CRUD to menu (menu links to routes) to [navigation.blade.php](resources/views/layouts/navigation.blade.php)
+    ```bladehtml
+        // add to <!-- Navigation Links -->
+        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+            {{ __('Users') }}
+        </x-nav-link>
+        
+        // add to <!-- Responsive Navigation Menu -->
+        <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+            {{ __('Users') }}
+        </x-responsive-nav-link>
+    ```
+**Build JS/CSS**
 
-## Contributing
+- Run command (local server if you need) `npm run dev` (or use `sail npm ...` if you're using docker)
+- Run command (build files) `npm run build` (or use `sail npm ...` if you're using docker)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Factory Generator**
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Run command `sail artisan generate:factory User`
